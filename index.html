@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container1">
+    <!-- Coin Toss Game interface -->
+    <h2>Toss a Coin</h2>
+        <!-- Dropdown to select head or tail -->
+        <select id="coinSelect">
+          <option value="head">Head</option>
+          <option value="tail">Tail</option>
+        </select>
+
+        <!-- Button to toss the coin -->
+        <button id="toss" onclick="tossCoin()">Toss Coin</button>
+      </div>
+
+        <!-- Button to reset the game -->
+      <div class="cont2">
+        <button id="resetBtn" onclick="resetBtn()" disabled>Reset</button>
+      </div>
+
+        <!-- Health Status section --> 
+        <div class="gamestatus">
+          <div class="health-status">
+            <h3>Health Status</h3>
+            <!-- Display player's health -->
+            <p>Player: <span id="playerHealth">100</span></p>
+            <!-- Display opponent's health -->
+            <p>Opponent: <span id="opponentHealth">100</span></p>
+          </div>
+
+          <div class="actions">
+            <p id="actionMessage"></p>
+            <!-- Button for player to attack -->
+            <button onclick="playerAction('attack')" id="attackBtn" disabled>Attack</button>
+            <!-- Button for player to defend-->
+            <button onclick="playerAction('defend')" id="defendBtn" disabled>Defend</button>
+          </div>
+        </div>
+      </div>
+
+    <script>
+    // Initialize player and opponent health
+    let playerHealth = 100;
+    let opponentHealth = 100;
+    let attackDamage = 0;
+    let defendCount = 0;
+
+    // Function to toss the coin and determine player's turn
+    function tossCoin() {
+        // Get the player's choice (head or tail)
+        const coinSelect = document.getElementById('coinSelect');
+        const playerChoice = coinSelect.value;
+        // Generate a random result for the coin toss (0 for head, 1 for tail)
+        const coinResult = Math.floor(Math.random() * 2); // Generates 0 or 1
+        let message = "";
+        
+        // Check if player's choice matches the coin result
+        if ((playerChoice === 'head' && coinResult === 0) || (playerChoice === 'tail' && coinResult === 1)) {
+            message = "Coin is head. You chose " + playerChoice + "!";
+            // Enable only the attack button if player wins the toss
+            document.getElementById('attackBtn').disabled = false;
+            document.getElementById('defendBtn').disabled = false;
+        } 
+        
+        else {
+            message = "Coin is tail. You chose " + playerChoice + "!";
+            // Enable both attack and defend buttons if player loses the toss
+            document.getElementById('attackBtn').disabled = false;
+            document.getElementById('defendBtn').disabled = false;
+        }
+
+            // Display the toss result message
+            document.getElementById('actionMessage').innerText = message;
+            // Enable the reset button
+            document.getElementById('resetBtn').disabled = false;
+        }
+
+    // Function to calculate damage inflicted during the attack
+    function calculateDamage() {
+        return Math.floor(Math.random() * 5) + 1;
+    }
+    
+    // Function to determine opponent's action (attack or defend)
+    function opponentAction() {
+        const opponentChoice = Math.floor(Math.random() * 2); // Generates 0 or 1
+        return opponentChoice === 0 ? 'attack' : 'defend';
+    }
+    
+    // Function to handle player's action (attack or defend)
+    function playerAction(action) {
+        if (action === 'attack') {
+            attackDamage = calculateDamage();
+            document.getElementById('actionMessage').innerText = "You will attack!";
+        } 
+        
+        else if (action === 'defend') {
+            defendCount++;
+            document.getElementById('actionMessage').innerText = "You will defend!";
+         }
+         
+         // Determine opponent's action
+         const opponentChoice = opponentAction();
+         
+         // Resolve player and opponent actions
+         if (opponentChoice === 'attack') {
+            
+            if (action === 'defend') {
+                document.getElementById('actionMessage').innerText = "The opponent defended too.";
+            } 
+            
+            else {
+                opponentHealth -= attackDamage;
+                document.getElementById('actionMessage').innerText = "You inflict " + attackDamage + " damage.";
+            }
+        } 
+        
+            else {
+                if (action === 'attack') {
+                    document.getElementById('actionMessage').innerText = "Opponent inflicts 1 damage.";
+                     playerHealth--;
+                    } 
+
+                    else {
+                         document.getElementById('actionMessage').innerText = "You completely blocked the opponent.";
+                        }
+                    }
+                    
+                    // Update health status and check for game end
+                    updateHealthStatus();
+                    checkHealth();
+                }
+                
+     // Function to update health status display   
+    function updateHealthStatus() {
+        document.getElementById('playerHealth').innerText = playerHealth;
+        document.getElementById('opponentHealth').innerText = opponentHealth;
+    }
+    
+    // Function to check if game has ended
+    function checkHealth() {
+        if (playerHealth <= 0) {
+            document.getElementById('actionMessage').innerText = "Opponent wins!";
+            disableButtons();
+        } 
+        
+        else if (opponentHealth <= 0) {
+            document.getElementById('actionMessage').innerText = "Player wins!";
+            disableButtons();
+         }
+        }
+
+    // Function to disable action buttons and enable reset button
+    function disableButtons() {
+        document.getElementById('attackBtn').disabled = true;
+        document.getElementById('defendBtn').disabled = true;
+        document.getElementById('resetBtn').disabled = false;
+}
+    // Function to reset the game
+    function resetBtn() {
+        playerHealth = 100;
+        opponentHealth = 100;
+        attackDamage = 0;
+        defendCount = 0;
+
+        // Reset health status display and action message
+        document.getElementById('playerHealth').innerText = playerHealth;
+        document.getElementById('opponentHealth').innerText = opponentHealth;
+        document.getElementById('actionMessage').innerText = '';
+        document.getElementById('attackBtn').disabled = true;
+        document.getElementById('defendBtn').disabled = true;
+        document.getElementById('resetBtn').disabled = true;
+    }
+
+    </script>
+</body>
+</html>

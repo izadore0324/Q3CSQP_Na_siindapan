@@ -26,6 +26,12 @@
       </div>
 
         <!-- Health Status section --> 
+        <div class="opponentPic">
+            <img src="img1.png" width="300px" id="pic1"> 
+         </div>
+        <div id="vo">
+            <p>Let's test how worthy you are.</p>
+        </div>
         <div class="gamestatus">
           <div class="health-status">
             <h3>Health Status</h3>
@@ -33,9 +39,6 @@
             <p>Player: <span id="playerHealth">100</span></p>
             <!-- Display opponent's health -->
             <p>Opponent: <span id="opponentHealth">100</span></p>
-            <div class="opponentPic">
-                <img src="img1.png" width="200px"> 
-               </div>
           </div>
 
           <div class="actions">
@@ -69,7 +72,8 @@
             message = "Coin is head. You chose " + playerChoice + "!";
             // Enable only the attack button if player wins the toss
             document.getElementById('attackBtn').disabled = false;
-            document.getElementById('defendBtn').disabled = false;
+            document.getElementById('defendBtn').disabled = true;
+            document.getElementById('vo').innerText = "Interesting..";
         } 
         
         else {
@@ -77,6 +81,7 @@
             // Enable both attack and defend buttons if player loses the toss
             document.getElementById('attackBtn').disabled = false;
             document.getElementById('defendBtn').disabled = false;
+            document.getElementById('vo').innerText = "My turn.";
         }
 
             // Display the toss result message
@@ -126,8 +131,8 @@
         
             else {
                 if (action === 'attack') {
-                    document.getElementById('actionMessage').innerText = "Opponent inflicts 1 damage.";
-                     playerHealth--;
+                    playerHealth -=attackDamage;
+                    document.getElementById('actionMessage').innerText = "Opponent inflicts "+ attackDamage + " damage.";
                     } 
 
                     else {
@@ -150,11 +155,15 @@
     function checkHealth() {
         if (playerHealth <= 0) {
             document.getElementById('actionMessage').innerText = "Opponent wins!";
+            document.getElementById('vo').innerText = "How poor and fragile.";
             disableButtons();
         } 
         
         else if (opponentHealth <= 0) {
             document.getElementById('actionMessage').innerText = "Player wins!";
+            var image = document.getElementById('pic1');
+            image.src = 'img2.png';
+            document.getElementById('vo').innerText = "Foul!";
             disableButtons();
          }
         }
@@ -179,6 +188,10 @@
         document.getElementById('attackBtn').disabled = true;
         document.getElementById('defendBtn').disabled = true;
         document.getElementById('resetBtn').disabled = true;
+        var image = document.getElementById('pic1');
+        image.src = 'img1.png';
+        document.getElementById('vo').innerText = "Let's test how worthy you are..";
+
     }
 
     </script>
